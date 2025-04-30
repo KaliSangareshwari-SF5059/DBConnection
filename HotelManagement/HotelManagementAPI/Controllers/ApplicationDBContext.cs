@@ -19,7 +19,7 @@ namespace HotelManagementAPI.Controllers
         public static List<string> genderDetails = new List<string>() { "Male", "Female", "Others" };
 
         public static List<string> roomTypeDetails = new List<string>() { "Standard", "Delux", "Suit" };
-        public static List<string> bookingStatusDetails = new List<string>() { "Initiated", "Booked", "Cancelled" };
+        public static List<string> bookingStatusDetails = new List<string>() { "Booked", "Cancelled" };
 
         public DbSet<User> users { get; set; }
         public DbSet<WishList> wishlists { get; set; }

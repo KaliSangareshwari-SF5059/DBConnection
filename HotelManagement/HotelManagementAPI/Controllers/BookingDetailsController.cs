@@ -36,12 +36,15 @@ namespace HotelManagementAPI.Controllers
         return Ok(bookings);
       }
 
-      [HttpPost("add/newBookings")]
-      public IActionResult AddBookings(BookingDetails booking)
+      [HttpPost("add/newBooking/{totalPrice}/{userID}")]
+      public IActionResult AddBookings([FromBody] BookingDetails booking,int totalPrice,int userID )
       {
         _dbContext.Add(booking);
+        var user=_dbContext.users.Find(userID);
+        user.Amount-=totalPrice;
         _dbContext.SaveChanges();
-        return Ok();
+        
+        return Ok(booking.BookingID);
       }
 
       [HttpPut("cancel/bookings/{bookingId}")]

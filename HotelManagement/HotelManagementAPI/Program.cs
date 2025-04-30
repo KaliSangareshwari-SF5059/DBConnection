@@ -12,7 +12,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(option=>{
 option.AddPolicy("FrontEndPolicy",policy =>{
-    policy.WithOrigins("http://localhost:5175").AllowAnyHeader().AllowAnyMethod().AllowAnyHeader().AllowCredentials();
+    policy.WithOrigins("http://localhost:5173").AllowAnyHeader().AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 });
 });
 

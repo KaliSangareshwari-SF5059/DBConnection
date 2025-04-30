@@ -12,7 +12,7 @@ namespace HotelManagementAPI.Models
     {
         [Key]
         public int SelectionID { get; set; }
-        public int wishListID { get; set; }
+        public int WishListID { get; set; }
         public int BookingID { get; set; }
         public int RoomID { get; set; }
         public DateTime StayingFrom { get; set; }

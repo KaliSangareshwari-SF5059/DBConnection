@@ -36,11 +36,11 @@ namespace HotelManagementAPI.Controllers
             return Ok(selections);
         }
         [HttpPost("add/newSelections")]
-      public IActionResult AddBookings(RoomSelection selection)
+      public IActionResult AddBookings([FromBody] RoomSelection selection)
       {
-        _dbContext.Add(selection);
+        _dbContext.selections.Add(selection);
         _dbContext.SaveChanges();
-        return Ok();
+        return Ok(selection.SelectionID);
       }
     }
 }
