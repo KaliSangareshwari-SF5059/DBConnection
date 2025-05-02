@@ -22,6 +22,7 @@ namespace HotelManagementAPI.Models
         public string FoodType { get; set; }
         public string Gender { get; set; }
         public double Amount { get; set; }
+        public byte Profile{get;set;}
 
     }
 }

@@ -24,18 +24,44 @@ namespace HotelManagementAPI.Controllers
         public IActionResult GetAvailableWishList()
         {
 
+            List<WishList> availableWishes = new List<WishList>();
+
+            // Fetch available wishes
             var availableWish = _dbContext.wishlists
-             .Where(wish => !_dbContext.selections
-             .Any(room => room.RoomID == wish.RoomID
-             && room.BookingStatus != ApplicationDBContext.bookingStatusDetails[1]
-             && ((wish.FromDate >= room.StayingFrom && wish.FromDate <= room.StayingTo)
-             || (wish.ToDate >= room.StayingFrom && wish.ToDate <= room.StayingTo)
-             || (wish.FromDate <= room.StayingFrom && wish.ToDate >= room.StayingTo))))
-             .ToList();
+                .Where(wish => !_dbContext.selections
+                    .Any(room => room.RoomID == wish.RoomID
+                        && room.BookingStatus != ApplicationDBContext.bookingStatusDetails[1]
+                        && (
+                            (wish.FromDate >= room.StayingFrom && wish.FromDate <= room.StayingTo) ||
+                            (wish.ToDate >= room.StayingFrom && wish.ToDate <= room.StayingTo) ||
+                            (wish.FromDate <= room.StayingFrom && wish.ToDate >= room.StayingTo)
+                        )
+                    )
+                )
+                .ToList();
 
-            return Ok(availableWish);
+            // Fetch available rooms
+            var rooms = _dbContext.roomDetails
+                .Where(room => !_dbContext.selections
+                    .Any(selection => selection.RoomID == room.RoomID)
+                )
+                .ToList();
 
-           
+            // Add available wishes to the list
+            availableWishes.AddRange(availableWish);
+
+            // Map rooms to WishList and add to the list
+            availableWishes.AddRange(rooms.Select(room => new WishList
+            {
+                RoomID = room.RoomID,
+                // Map other properties as needed
+            }));
+
+            return Ok(availableWishes);
+
+
+
+
         }
 
         [HttpGet("get/wishlists/{userId}")]
@@ -52,12 +78,12 @@ namespace HotelManagementAPI.Controllers
         [HttpGet("get/wishlist/{wishlistID}")]
         public IActionResult GetWishListsDetail(int wishlistID)
         {
-            var wishlist = _dbContext.wishlists.Find(wishlistID);
-            if (wishlist == null)
+            var wishlists = _dbContext.wishlists.Find(wishlistID);
+            if (wishlists == null)
             {
                 return NotFound();
             }
-            return Ok(wishlist);
+            return Ok(wishlists);
         }
 
         [HttpDelete("delete/wishlist/{wishlistID}")]
@@ -91,7 +117,7 @@ namespace HotelManagementAPI.Controllers
             }
             wishlist.FromDate = wishListData.FromDate;
             wishlist.ToDate = wishListData.ToDate;
-            wishlist.PriceOfRoom=wishListData.PriceOfRoom;
+            wishlist.PriceOfRoom = wishListData.PriceOfRoom;
             _dbContext.SaveChanges();
             return Ok();
         }

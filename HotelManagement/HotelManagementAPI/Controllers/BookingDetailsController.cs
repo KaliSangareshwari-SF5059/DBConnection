@@ -28,13 +28,25 @@ namespace HotelManagementAPI.Controllers
       [HttpGet("get/bookings/{userid}")]
       public IActionResult GetBookingsDetails(int userid)
       {
-        var bookings=_dbContext.bookingDetails.Find(userid);
+        var bookings=_dbContext.bookingDetails.Where(booking=>booking.UserID==userid);
         if(bookings==null)
         {
             return NotFound();
         }
         return Ok(bookings);
       }
+      [HttpGet("get/booking/{bookingid}")]
+      public IActionResult GetBookingDetails(int bookingid)
+      {
+        var booking=_dbContext.bookingDetails.Find(bookingid);
+        if(booking==null)
+        {
+            return NotFound();
+        }
+        return Ok(booking);
+      }
+      
+
 
       [HttpPost("add/newBooking/{totalPrice}/{userID}")]
       public IActionResult AddBookings([FromBody] BookingDetails booking,int totalPrice,int userID )
@@ -46,25 +58,24 @@ namespace HotelManagementAPI.Controllers
         
         return Ok(booking.BookingID);
       }
-
-      [HttpPut("cancel/bookings/{bookingId}")]
+[HttpDelete("cancel/bookings/{bookingId}")]
       public IActionResult CancelBookings(int bookingId)
       {
         var booking= _dbContext.bookingDetails.Find(bookingId);
         if(booking==null)
         {
-            return NotFound();
+            return NotFound(bookingId);
         }
         var roomselection=_dbContext.selections.Where(bookings=>bookings.BookingID==booking.BookingID);
         foreach(var rooms in roomselection)
         {  
-            rooms.BookingStatus=ApplicationDBContext.bookingStatusDetails[2];
+            rooms.BookingStatus=ApplicationDBContext.bookingStatusDetails[1];
         }
-        booking.BookingStatus=ApplicationDBContext.bookingStatusDetails[2];
+        booking.BookingStatus=ApplicationDBContext.bookingStatusDetails[1];
         var users = _dbContext.users.FirstOrDefault(user=>user.UserID==booking.UserID);
         users.Amount+=booking.TotalPrice;
         _dbContext.SaveChanges();
-        return Ok();
+        return Ok(bookingId);
       }
 
     }

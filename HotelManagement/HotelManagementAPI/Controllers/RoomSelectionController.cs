@@ -25,16 +25,18 @@ namespace HotelManagementAPI.Controllers
             return Ok(_dbContext.selections);
         }
 
-        [HttpGet("get/selections/{userid}")]
-        public IActionResult GetSelectionsDetails(int userid)
+        [HttpGet("get/selections/{bookingID}")]
+        public IActionResult GetSelectionsDetails(int bookingID)
         {
-            var selections = _dbContext.selections.Find(userid);
+            var selections = _dbContext.selections.Where(booking=>booking.BookingID==bookingID);
             if (selections == null)
             {
                 return NotFound();
             }
             return Ok(selections);
         }
+
+   
         [HttpPost("add/newSelections")]
       public IActionResult AddBookings([FromBody] RoomSelection selection)
       {
